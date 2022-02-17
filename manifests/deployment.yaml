@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: hnlapp 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hnltapp
+  template:
+    metadata:
+      labels:
+        app: hnlapp
+    spec:
+      containers:
+        - name: hnlapp 
+          image: epamdiplomaacr.azurecr.io/hnlapp
+          ports:
+          - containerPort: 5000
