@@ -6,10 +6,10 @@ services:
       - 5000:5000
     environment:
       # Password is taken from the host environment.
-      DB_USER: nhlapp
+      DB_USER: nhltop
       DB_PASSWORD: "${DB_PASSWORD}" 
       DB_HOST: database
-      DB_NAME: nhlapp
+      DB_NAME: nhltop
     networks:
       - private
 
@@ -20,8 +20,8 @@ services:
       - 3306:3306
     environment:
       MARIADB_RANDOM_ROOT_PASSWORD: yes
-      MARIADB_DATABASE: nhlapp
-      MARIADB_USER: nhlapp
+      MARIADB_DATABASE: nhltop
+      MARIADB_USER: nhltop
       MARIADB_PASSWORD: "${DB_PASSWORD}"
     networks:
       - private

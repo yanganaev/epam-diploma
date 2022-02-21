@@ -8,11 +8,7 @@ RUN pip install -r requirements.txt
 
 FROM python:3.9-slim
 ENV PYTHONDONTWRITEBYTECODE 1
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update \
-    && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
-      apt-utils \
+RUN apt-get update && apt-get -y install \
       curl \
       libmariadb3 \
       libmariadb-dev \
@@ -20,12 +16,12 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
 WORKDIR /app
-RUN groupadd --gid 9999 nhlapp \
+RUN groupadd --gid 9999 nhltop \
     && useradd --home-dir /app \
         --uid 9999 \
-        --gid 9999 --shell /bin/bash nhlapp
-USER nhlapp
-COPY ./nhlapi.py ./
+        --gid 9999 --shell /bin/bash nhltop
+USER nhltop
+COPY ./nhltop.py ./
 COPY ./app.py ./
 COPY ./static/ ./static/
 COPY ./templates/ ./templates/
@@ -33,4 +29,3 @@ EXPOSE 5000
 HEALTHCHECK --interval=20s --timeout=5s --retries=3 \
     CMD curl --fail http://localhost:5000/check/ || exit 1
 CMD ["python", "-m", "flask", "run", "-h", "0.0.0.0"]
-ENV DEBIAN_FRONTEND teletype
