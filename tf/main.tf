@@ -121,14 +121,22 @@ resource "azurerm_mariadb_server" "dbsrv" {
   backup_retention_days        = 7
   geo_redundant_backup_enabled = false
 
-  administrator_login          = "nhlapp"
+  administrator_login          = "nhltop"
   administrator_login_password = var.DB_PASSWORD
   version                      = "10.3"
   ssl_enforcement_enabled      = false
 }
 
 resource "azurerm_mariadb_database" "dbprod" {
-  name                = "nhlapp"
+  name                = "nhltop"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mariadb_server.dbsrv.name
+  charset             = "utf8"
+  collation           = "utf8_general_ci"
+}
+
+resource "azurerm_mariadb_database" "dbtest" {
+  name                = "test"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mariadb_server.dbsrv.name
   charset             = "utf8"
