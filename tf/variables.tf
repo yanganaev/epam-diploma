@@ -1,4 +1,7 @@
-variable "client_id" {}
+variable "client_id" {
+  default = "81be27a0-4a6d-46a0-96ef-12997b280d90"
+}  
+
 variable "client_secret" {}
 
 variable "azure_region" {
@@ -14,7 +17,7 @@ variable "resource_group_name" {
 }
 
 variable "agent_count" {
-    default = 3
+    default = 2
 }
 
 variable "DB_PASSWORD" {
@@ -27,11 +30,11 @@ variable "ssh_public_key" {
 }
 
 variable "dns_prefix" {
-  default = "aks1"
+  default = "aks01"
 }
 
 variable "cluster_name" {
-  default = "aks1"
+  default = "aks01"
 }
 
 variable "log_analytics_workspace_name" {
@@ -40,7 +43,7 @@ variable "log_analytics_workspace_name" {
 
 # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
 variable "log_analytics_workspace_location" {
-  default = "centralus"
+  default = "eastus"
 }
 
 # refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing

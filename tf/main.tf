@@ -3,13 +3,14 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.46.0"
+      version = "~>2.0"
     }
   }
 }
 
 provider "azurerm" {
-  features {}
+   client_id       = var.client_id
+   features {}
 }
 
 resource "random_string" "resource_code" {
@@ -68,20 +69,16 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 
   default_node_pool {
-    name                = "default"
-    min_count           = 2
-    max_count           = 4
-    max_pods            = 20
-    vm_size             = "Standard_B2s"
-    enable_auto_scaling = true
-    availability_zones  = ["1", "2"]
+    name                = "agentpool"
+    node_count      = var.agent_count
+    vm_size         = "Standard_D2_v2"
   }
 
   auto_scaler_profile {
     scale_down_delay_after_add = "2m"
     scale_down_unneeded        = "2m"
   }
-
+  
   addon_profile {
     oms_agent {
       enabled                    = true
@@ -97,7 +94,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
 # Container registry
 resource "azurerm_container_registry" "acr" {
-  name                = "epamdiplomaacr"
+  name                = "epmacr9081"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sku                 = "Basic"
@@ -114,7 +111,7 @@ resource "azurerm_role_assignment" "aks_to_acr_role" {
 ### Database resources
 
 resource "azurerm_mariadb_server" "dbsrv" {
-  name                = "epamdiplomadb"
+  name                = "epmdb9081"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -132,14 +129,6 @@ resource "azurerm_mariadb_server" "dbsrv" {
 
 resource "azurerm_mariadb_database" "dbprod" {
   name                = "nhlapp"
-  resource_group_name = azurerm_resource_group.rg.name
-  server_name         = azurerm_mariadb_server.dbsrv.name
-  charset             = "utf8"
-  collation           = "utf8_general_ci"
-}
-
-resource "azurerm_mariadb_database" "dbtest" {
-  name                = "test"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_mariadb_server.dbsrv.name
   charset             = "utf8"
