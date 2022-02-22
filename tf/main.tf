@@ -55,10 +55,10 @@ resource "azurerm_resource_group" "rg" {
 ### Kubernetes cluster
 
 resource "azurerm_kubernetes_cluster" "k8s" {
-  name                = var.cluster_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = var.dns_prefix
+    name                = var.cluster_name
+    location            = azurerm_resource_group.rg.location
+    resource_group_name = azurerm_resource_group.rg.name
+    dns_prefix          = var.dns_prefix
 
   linux_profile {
     admin_username = "ubuntu"
@@ -94,7 +94,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
 # Container registry
 resource "azurerm_container_registry" "acr" {
-  name                = "epmacr9081"
+  name                = "epmacr9918"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sku                 = "Basic"
@@ -111,7 +111,7 @@ resource "azurerm_role_assignment" "aks_to_acr_role" {
 ### Database resources
 
 resource "azurerm_mariadb_server" "dbsrv" {
-  name                = "epmdb9081"
+  name                = "epmdb9918"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 

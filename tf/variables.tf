@@ -1,6 +1,4 @@
-variable "client_id" {
-  default = "81be27a0-4a6d-46a0-96ef-12997b280d90"
-}  
+variable "client_id" {}  
 
 variable "client_secret" {}
 
@@ -13,7 +11,7 @@ variable "location" {
 }
 
 variable "resource_group_name" {
-  default = "EPAM_Diploma"
+  default = "Diploma"
 }
 
 variable "agent_count" {
