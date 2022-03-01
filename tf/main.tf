@@ -135,6 +135,14 @@ resource "azurerm_mariadb_database" "dbprod" {
   collation           = "utf8_general_ci"
 }
 
+resource "azurerm_mariadb_database" "dbtest" {
+  name                = "test"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mariadb_server.dbsrv.name
+  charset             = "utf8"
+  collation           = "utf8_general_ci"
+}
+
 resource "azurerm_mariadb_firewall_rule" "db_firewall_rule" {
   name                = "permit-azure"
   resource_group_name = azurerm_resource_group.rg.name
