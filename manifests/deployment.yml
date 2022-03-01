@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "aks01-2888"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "aks01-2888"
+  template:
+    metadata:
+      labels:
+        app: "aks01-2888"
+    spec:
+      containers:
+        - name: "aks01-2888"
+          image: "epmacr9918.azurecr.io/aks01"
+          ports:
+          - containerPort: 5000
