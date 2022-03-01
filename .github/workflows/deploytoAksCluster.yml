@@ -1,9 +1,38 @@
-on: [push]
+name: Build and deploy
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/**
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - name: Checkout repository 
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # For SonarCloud - fetch full repo
+
+    - name: Tests - setup Python 3.9
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+
+    - name: Tests - install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libmariadb3 libmariadb-dev
+        python -m pip install --upgrade pip
+        pip install -r app/requirements.txt
+    - name: Tests - run
+      run: pytest -vv app
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     
     - uses: azure/docker-login@v1
       with:
