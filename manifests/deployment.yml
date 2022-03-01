@@ -1,19 +1,19 @@
 apiVersion : apps/v1
 kind: Deployment
 metadata:
-  name: "aks01-2888"
+  name: "nhltop"
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: "aks01-2888"
+      app: "nhltop"
   template:
     metadata:
       labels:
-        app: "aks01-2888"
+        app: "nhltop"
     spec:
       containers:
-        - name: "aks01-2888"
+        - name: "nhltop"
           image: "epmacr9918.azurecr.io/aks01"
           ports:
           - containerPort: 5000
