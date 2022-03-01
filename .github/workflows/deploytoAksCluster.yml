@@ -4,6 +4,8 @@ on:
       - main
     paths:
       - app/**
+env:
+  ACR: epmacr9918.azurecr.io
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -32,6 +34,16 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
+    - name: Set environment variables
+      run: |
+        # Set k8s namespace name
+        if [ $GITHUB_REF_NAME = 'main' ]
+          then echo "NAMESPACE=prod" >> $GITHUB_ENV
+          else echo "NAMESPACE=dev"  >> $GITHUB_ENV
+        fi
+        # Set docker image path
+        echo "IMAGE_ACR=${{ env.ACR }}/aks01:$GITHUB_SHA" >> $GITHUB_ENV
     
     - uses: azure/docker-login@v1
       with:
@@ -52,15 +64,15 @@ jobs:
     
     - name: Create namespace
       run: |
-        namespacePresent=`kubectl get namespace | grep aks01a4bc | wc -l`
+        namespacePresent=`kubectl get namespace | grep nhltop | wc -l`
         if [ $namespacePresent -eq 0 ]
         then
-            echo `kubectl create namespace aks01a4bc`
+            echo `kubectl create namespace nhltop`
         fi
 
     - uses: azure/k8s-create-secret@v1
       with:
-        namespace: aks01a4bc
+        namespace: nhltop
         container-registry-url: epmacr9918.azurecr.io
         container-registry-username: ${{ secrets.acr_epmacr9918_username }}
         container-registry-password: ${{ secrets.acr_epmacr9918_password }}
@@ -68,10 +80,10 @@ jobs:
        
     - uses: azure/k8s-deploy@v1.2
       with:
-        namespace: aks01a4bc
+        namespace: nhltop
         manifests: |
-          manifests/deployment.yml
-          manifests/service.yml
+          manifests/deploy01.yml
+          manifests/service01.yml
         images: |
           epmacr9918.azurecr.io/aks01:${{ github.sha }}
         imagepullsecrets: |
