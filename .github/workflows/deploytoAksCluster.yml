@@ -82,8 +82,8 @@ jobs:
       with:
         namespace: nhltop
         manifests: |
-          manifests/deploy01.yml
-          manifests/service01.yml
+          manifests/deployment.yml
+          manifests/service.yml
         images: |
           epmacr9918.azurecr.io/aks01:${{ github.sha }}
         imagepullsecrets: |
