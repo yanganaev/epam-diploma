@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: "aks01-2888"
+    name: "nhltop"
     labels:
-        app: "aks01-2888"
+        app: "nhltop"
 spec:
     type: LoadBalancer
     ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
     selector:
-        app: "aks01-2888"
+        app: "nhltop"
