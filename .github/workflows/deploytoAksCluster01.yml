@@ -1,0 +1,77 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/**
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository 
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # For SonarCloud - fetch full repo
+
+    - name: Tests - setup Python 3.9
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+
+    - name: Tests - install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libmariadb3 libmariadb-dev
+        python -m pip install --upgrade pip
+        pip install -r app/requirements.txt
+    - name: Tests - run
+      run: pytest -vv app
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
+    - uses: azure/docker-login@v1
+      with:
+        login-server: epmacr9918.azurecr.io
+        username: ${{ secrets.acr_epmacr9918_username }}
+        password: ${{ secrets.acr_epmacr9918_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/app" -f  "app/Dockerfile" -t epmacr9918.azurecr.io/aks01:${{ github.sha }} --label dockerfile-path=app/Dockerfile
+        docker push epmacr9918.azurecr.io/aks01:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_aks01_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep nhltop | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace nhltop`
+        fi
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: nhltop
+        container-registry-url: epmacr9918.azurecr.io
+        container-registry-username: ${{ secrets.acr_epmacr9918_username }}
+        container-registry-password: ${{ secrets.acr_epmacr9918_password }}
+        secret-name: aks01dockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: nhltop
+        manifests: |
+          manifests/deploy01.yml
+          manifests/service.yml
+        images: |
+          epmacr9918.azurecr.io/aks01:${{ github.sha }}
+        imagepullsecrets: |
+          aks01dockerauth
