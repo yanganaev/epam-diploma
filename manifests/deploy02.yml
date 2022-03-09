@@ -1,6 +1,8 @@
-apiVersion : apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app: nhltop
   name: nhltop
 spec:
   replicas: 2
@@ -13,19 +15,29 @@ spec:
         app: nhltop
     spec:
       containers:
-        - name: nhltop
-          env:
-          - name: DB_USER
-            value: nhltop
-          - name: DB_PASSWORD
-            valueFrom:
+      - name: nhltop
+        env:
+        - name: DB_USER
+          value: nhltop
+        - name: DB_PASSWORD
+          valueFrom:
             secretKeyRef:
               name: mysecret
-              key: password
-          - name: DB_NAME
-            value: nhltop
-          - name: DB_HOST
-            value: epmdb9918.mariadb.database.azure.com
-            image: epmacr9918.azurecr.io/aks01
-            ports:
-          - containerPort: 5000
+              key: db_password
+        - name: DB_NAME
+          value: nhltop
+        - name: DB_HOST
+          value: epmdb9918.mariadb.database.azure.com
+        image: epmacr9918.azurecr.io/aks01
+        resources:
+          limits:
+            cpu: 500m
+            memory: 100Mi
+          requests:
+            cpu: 40m
+            memory: 50Mi
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+      restartPolicy: Always
