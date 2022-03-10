@@ -28,4 +28,3 @@ spec:
           value: nhltop
         - name: DB_HOST
           value: epmdb9918.mariadb.database.azure.com
-        image: epmacr9918.azurecr.io/aks01
