@@ -27,12 +27,7 @@ jobs:
     - name: Tests - run
       run: pytest -vv app
 
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    
+        
     - uses: azure/docker-login@v1
       with:
         login-server: epmacr9918.azurecr.io
@@ -57,7 +52,6 @@ jobs:
         then
             echo `kubectl create namespace nhltop`
         fi
-
     - uses: azure/k8s-create-secret@v1
       with:
         namespace: nhltop
