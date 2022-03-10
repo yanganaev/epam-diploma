@@ -28,8 +28,8 @@ spec:
           value: nhltop
         - name: DB_HOST
           value: epmdb9918.mariadb.database.azure.com
-        image: epmacr9918.azurecr.io/aks01
-        resources:
+          image: epmacr9918.azurecr.io/aks01:033e66af19cad193fd1da4b5d5c10cbe904c3b46
+          resources:
           limits:
             cpu: 500m
             memory: 100Mi
@@ -40,4 +40,3 @@ spec:
         ports:
         - containerPort: 5000
           protocol: TCP
-      restartPolicy: Always
