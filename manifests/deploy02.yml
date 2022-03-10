@@ -25,10 +25,10 @@ spec:
               name: mysecret
               key: db_password
         - name: DB_NAME
-          value: nhltop
+          value: {{ DB_NAME }}
         - name: DB_HOST
           value: epmdb9918.mariadb.database.azure.com
-        image: epmacr9918.azurecr.io/aks01
+        image: epmacr9918.azurecr.io/aks01:{{ COMMIT_ID }}
         resources:
           limits:
             cpu: 500m
