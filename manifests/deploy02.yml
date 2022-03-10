@@ -28,7 +28,7 @@ spec:
           value: {{ DB_NAME }}
         - name: DB_HOST
           value: epmdb9918.mariadb.database.azure.com
-        image: epmacr9918.azurecr.io/aks01:{{ COMMIT_ID }}
+        image: epmacr9918.azurecr.io/aks01
         resources:
           limits:
             cpu: 500m
