@@ -18,8 +18,8 @@ spec:
       - name: nhltop
         env:
         - name: DB_HOST
-           value: epmdb9918.mariadb.database.azure.com
-         image: epmacr9918.azurecr.io/aks01:${{ github.sha }}
+          value: epmdb9918.mariadb.database.azure.com
+          image: epmacr9918.azurecr.io/aks01:${{ github.sha }}
         - name: DB_USER
           value: nhltop@epmdb9918
         - name: DB_PASSWORD
