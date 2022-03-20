@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nhltop
+  name: nhltop
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nhltop
+  template:
+    metadata:
+      labels:
+        app: nhltop
+    spec:
+      containers:
+      - name: nhltop
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: db_username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: db_password
+        - name: DB_NAME
+          value: nhltop
+        - name: DB_HOST
+          value: epmdb9918.mariadb.database.azure.com
+        image: epmacr9918.azurecr.io/aks01:${{ github.sha }}
+        ports:
+        - containerPort: 5000
+          protocol: TCP
