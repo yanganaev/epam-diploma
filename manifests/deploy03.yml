@@ -31,7 +31,7 @@ spec:
           value: nhltop
         - name: DB_HOST
           value: epmdb9918.mariadb.database.azure.com
-        image: epmacr9918.azurecr.io/aks01:${{ github.sha }}
+        image: epmacr9918.azurecr.io/aks01
         ports:
         - containerPort: 5000
           protocol: TCP
