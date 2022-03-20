@@ -7,7 +7,7 @@ on:
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  REGISTRY_NAME: epmacr9918.azurecr.io
+  REGISTRY_NAME: epmacr9918
   CLUSTER_NAME: aks01
   CLUSTER_RESOURCE_GROUP: flxiangdiplom
   NAMESPACE: nhltop
