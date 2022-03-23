@@ -6,10 +6,26 @@ terraform {
       version = "~>2.0"
     }
   }
+    backend "azurerm" {
+        resource_group_name  = "tfstate"
+        storage_account_name = "tfstatea6g49"
+        container_name       = "tfstate"
+        key                  = "terraform.tfstate"
+    }
+
 }
 
 provider "azurerm" {
-   features {}
+  features {}
+}
+
+resource "azurerm_resource_group" "rg" {
+  name     = var.resource_group_name
+  location = var.azure_region
+
+  tags = {
+    Owner = "feliks_ianganaev@epam.com"
+  }
 }
 
 ### Kubernetes cluster
