@@ -23,6 +23,14 @@ variable "DB_PASSWORD" {
   type        = string
 }
 
+variable "db_username" {
+  default = "nhltop"
+}
+
+variable "db_password" {
+  default = "Qwerty12345!"
+}
+
 variable "ssh_public_key" {
     default = "~/.ssh/id_rsa.pub"
 }
