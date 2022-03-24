@@ -18,11 +18,6 @@ variable "agent_count" {
     default = 2
 }
 
-variable "DB_PASSWORD" {
-  description = "Password for MariaDB admin (get from environment)"
-  type        = string
-}
-
 variable "db_username" {
   default = "nhltop"
 }
