@@ -98,7 +98,7 @@ resource "azurerm_mariadb_server" "dbsrv" {
   geo_redundant_backup_enabled = false
 
   administrator_login          = "nhltop"
-  administrator_login_password = var.DB_PASSWORD
+  administrator_login_password = azurerm_key_vault_secret.dbpassword.value
   version                      = "10.3"
   ssl_enforcement_enabled      = false
 }
