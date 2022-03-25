@@ -97,7 +97,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Deploy app to AKS
-      - uses: actions/checkout@v2
       - name: Deploy app to AKS
         uses: azure/k8s-deploy@v1
         with:
