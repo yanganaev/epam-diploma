@@ -39,6 +39,12 @@ jobs:
           pip install -r app/requirements.txt
       - name: Tests - run
         run: pytest -vv app
+      
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  
 
   build:
     name: Build
@@ -58,7 +64,7 @@ jobs:
         run: |
           docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
           docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
-        working-directory: ./app
+          working-directory: ./app
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
       - name: Set the target Azure Kubernetes Service (AKS) cluster
