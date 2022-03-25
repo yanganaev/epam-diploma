@@ -46,8 +46,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  
 
-  build:
-    name: Build
+  build-and-deploy:
+    name: Build and Deploy
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -90,12 +90,7 @@ jobs:
           secret-name: ${{ env.SECRET }}
           namespace: ${{ env.NAMESPACE }}
           arguments: --force true
-
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
+          
       # Deploy app to AKS
       - name: Deploy app to AKS
         uses: azure/k8s-deploy@v1
