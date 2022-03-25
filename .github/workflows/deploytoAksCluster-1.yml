@@ -64,7 +64,7 @@ jobs:
         run: |
           docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
           docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
-          working-directory: ./app
+        working-directory: ./app
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
       - name: Set the target Azure Kubernetes Service (AKS) cluster
