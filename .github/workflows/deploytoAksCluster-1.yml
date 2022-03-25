@@ -15,12 +15,36 @@ env:
   APP_NAME: nhltop
   
 jobs:
-  build:
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@main
-    
+    - name: Checkout repository 
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # For SonarCloud - fetch full repo
+
+    - name: Tests - setup Python 3.9
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+
+    - name: Tests - install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libmariadb3 libmariadb-dev
+        python -m pip install --upgrade pip
+        pip install -r app/requirements.txt
+    - name: Tests - run
+      run: pytest -vv app
+  
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
     # Connect to Azure Container Registry (ACR)
+    - name: Connect to Azure Container Registry
     - uses: azure/docker-login@v1
       with:
         login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
@@ -28,12 +52,14 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
     
     # Container build and push to a Azure Container Registry (ACR)
+    - name: Container build and push to a Azure Container Registry
     - run: |
         docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
         docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
       working-directory: ./app
     
-    # Set the target Azure Kubernetes Service (AKS) cluster. 
+    # Set the target Azure Kubernetes Service (AKS) cluster.
+    - name: Set the target Azure Kubernetes Service (AKS) cluster    
     - uses: azure/aks-set-context@v1
       with:
         creds: '${{ secrets.AZURE_CREDENTIALS }}'
@@ -41,10 +67,12 @@ jobs:
         resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
     
     # Create namespace if doesn't exist
+    - name: Create namespace
     - run: |
         kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o json | kubectl apply -f -
     
     # Create image pull secret for ACR
+    - name: Create image pull secret for ACR
     - uses: azure/k8s-create-secret@v1
       with:
         container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
@@ -53,8 +81,14 @@ jobs:
         secret-name: ${{ env.SECRET }}
         namespace: ${{ env.NAMESPACE }}
         arguments: --force true
-    
+  
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
     # Deploy app to AKS
+    - name: Deploy app to AKS
     - uses: azure/k8s-deploy@v1
       with:
         manifests: |
