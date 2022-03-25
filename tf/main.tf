@@ -59,8 +59,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     type = "SystemAssigned"
   }
 
-}
-
 # Container registry
 resource "azurerm_container_registry" "acr" {
   name                = "epmacr9918"
